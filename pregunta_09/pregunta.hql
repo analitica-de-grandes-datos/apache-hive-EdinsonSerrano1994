@@ -46,3 +46,12 @@ LOAD DATA LOCAL INPATH 'data1.csv' INTO TABLE tbl1;
     >>> Escriba su respuesta a partir de este punto <<<
 */
 
+INSERT OVERWRITE LOCAL DIRECTORY './output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+
+SELECT t0.c1, t0.c2, t1.c4_value
+FROM tbl0 AS t0
+JOIN (
+SELECT c1, c4_key, c4_value 
+FROM tbl1 LATERAL VIEW explode(c4) tbl1 AS c4_key, c4_value) AS t1
+ON t0.c1=t1.c1 AND t0.c2=t1.c4_key;
